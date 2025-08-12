@@ -9,15 +9,22 @@ namespace FarmaAPI.Controllers;
 public class ClientController: ControllerBase
 {
     private readonly ClientServices _clientService;
-
     public ClientController(ClientServices clientService)
     {
         _clientService = clientService;
     }
-    [HttpGet]
+    
+    [HttpGet(Name = "GetClients")]
     public IActionResult GetClients()
     {
-        var client = _clientService.GetClient();
+        var clients = _clientService.GetClient();
+        return Ok(clients);
+    }
+
+    [HttpPost(Name = "CreateClient")]
+    public IActionResult CreateClient()
+    {
+        var client = _clientService.CreateClient();
         return Ok(client);
     }
     
