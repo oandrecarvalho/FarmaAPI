@@ -1,4 +1,4 @@
-using FarmaAPI.Data.Context;
+// using FarmaAPI.Data.Context;
 using FarmaAPI.DTO;
 using FarmaAPI.Interfaces;
 using FarmaAPI.Models;
@@ -8,18 +8,19 @@ namespace FarmaAPI.Repositories;
 
 public class ClientRepository : IClientRepository
 {
-    private readonly DbContext _context;
-
-    public ClientRepository(Context context)
+    private readonly FarmaDbContext _context;
+    
+    public ClientRepository(FarmaDbContext context)
     {
         _context = context;
     }
-    
-    private readonly IClientRepository _clientRepository;
 
-    public ClientRepository(IClientRepository clientRepository)
+    public Client FindById(Guid id)
     {
-        _clientRepository = clientRepository;
+        return _context.Clients
+            .Select(c => c)
+            .Where(c => c.Id.Equals(id))
+            .First();
     }
     
     public List<Client> GetClients()
@@ -29,8 +30,9 @@ public class ClientRepository : IClientRepository
             .ToList();
     }
 
-    public Client CreateClient(CreateClientDTO dto)
+    public void CreateClient(Client client)
     {
-        throw new NotImplementedException();
+        _context.Add(client);
+        _context.SaveChanges();
     }
 }

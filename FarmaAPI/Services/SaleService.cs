@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using FarmaAPI.DTO;
 using FarmaAPI.Interfaces;
 using FarmaAPI.Models;
@@ -18,38 +19,81 @@ public class SaleService : ISaleService
         
     }
 
-    public Sale CreateSale(CreateSaleDTO dto)
+    public Sale CreateSale(CreateSaleDTO saleDTO)
     {
-        var client =  _clientRepository
-            .GetClients()
-            .FirstOrDefault(c => c.Id == dto.ClientId);
-        if (client == null)
-        {
-            throw new InvalidOperationException("Client not found");
-        }
+        //Código antigo!
+        // var client =  _clientRepository
+        //     .GetClients()
+        //     .FirstOrDefault(c => c.Id == saleDTO.ClientId);
+        // if (client == null)
+        // {
+        //     throw new InvalidOperationException("Client not found");
+        // }
+        //
+        // var product = _productRepository
+        //     .GetProducts().FirstOrDefault(p => p.Id == saleDTO.ProductId);
+        // if (product == null)
+        // {
+        //     throw new InvalidOperationException("Product not found");
+        // }
+        //
+        // if (product.Stock < saleDTO.Stock)
+        // {
+        //     throw new InvalidOperationException("Insufficient stock");
+        // }
 
-        var product = _productRepository
-            .GetProducts().FirstOrDefault(p => p.Id == dto.ProductId);
-        if (product == null)
+        try
         {
-            throw new InvalidOperationException("Product not found");
-        }
-        
-        if (product.Stock < dto.Stock)
-        {
-            throw new InvalidOperationException("Insufficient stock");
-        }
-        
-        product.Stock -= dto.Stock;
+            if (saleDTO == null)
+            {
+                throw new Exception("Invalid sale data");
+            }
 
-        var sale = new Sale
+            if (saleDTO.ProductId == Guid.Empty)
+            {
+                throw new Exception("Invalid product");
+            }
+
+            if (saleDTO.ClientId == Guid.Empty)
+            {
+                throw new Exception("Invalid client");
+            }
+            
+            Client clientOld = _clientRepository.FindById(saleDTO.ClientId);
+            if (clientOld == null)
+            {
+                throw new Exception("Invalid client");
+            }
+            
+            Product productOld = _productRepository.FindById(saleDTO.ProductId);
+            if (productOld == null)
+            {
+                throw new Exception("Invalid product");
+            }
+
+            if (productOld.Stock < saleDTO.Stock)
+            {
+                throw new Exception("Insufficient stock");
+            }
+            
+            productOld.Stock -= saleDTO.Stock;
+            _productRepository.Update(productOld);
+            
+            var newSale = new Sale
+            {
+                ClientId = clientOld.Id,
+                ProductId = productOld.Id,
+                Date = DateTime.Now,
+            };
+            
+            _saleRepository.CreateSale(newSale);
+            
+            return newSale;
+        }
+        catch (Exception ex)
         {
-            Client = client,
-            Products = product,
-            Date = dto.Date,
-        };
-        
-        return _saleRepository.CreateSale(dto);
+            throw new Exception(ex.Message);
+        }
     }
 
     public List<Sale> GetSales()

@@ -23,7 +23,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost(Name = "CreateProduct")]
-    public IActionResult CreateProduct(CreateProductDTO dto)
+    public IActionResult CreateProduct([FromBody]CreateProductDTO dto)
     {
         var product = _productService.CreateProduct(dto);
         return Ok(product);

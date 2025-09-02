@@ -13,13 +13,34 @@ public class ClientService : IClientService
         _clientRepository = clientRepository;
     }
 
-    public Client CreateClient(CreateClientDTO dto)
+    public Client CreateClient(CreateClientDTO clientDTO)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (clientDTO == null)
+            {
+                throw new Exception("Invalid client data");
+            }
+
+            var newClient = new Client
+            {
+                Name = clientDTO.Name,
+                Cpf = clientDTO.Cpf
+            };
+            
+            _clientRepository.CreateClient(newClient);
+            
+            return newClient;
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 
     public List<Client> GetClients()
     {
-        return _clientRepository.GetClients();
+        List<Client> clients = _clientRepository.GetClients();
+        return clients;
     }
 }

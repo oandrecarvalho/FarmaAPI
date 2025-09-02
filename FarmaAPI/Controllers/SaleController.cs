@@ -1,6 +1,7 @@
 using FarmaAPI.Models;
 using FarmaAPI.DTO;
 using FarmaAPI.Repositories;
+using FarmaAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FarmaAPI.Controllers;
@@ -9,25 +10,34 @@ namespace FarmaAPI.Controllers;
 [Route("api/sale")]
 public class SaleController : ControllerBase
 {
-    private readonly SaleRepository _saleRepository;
+    private readonly SaleService _saleService;
 
-    public SaleController(SaleRepository saleRepository)
+    public SaleController(SaleService saleService)
     {
-        _saleRepository = saleRepository;
+        _saleService = saleService;
     }
 
     [HttpGet(Name = "GetSales")]
     public IActionResult GetSales()
     {
-        var sales = _saleRepository.GetSales();
+        var sales = _saleService.GetSales();
         if (sales is null) return NotFound();
         return Ok(sales);
     }
 
     [HttpPost(Name = "CreateSale")]
-    public IActionResult CreateSale(CreateSaleDTO dto)
+    public IActionResult CreateSale([FromBody]CreateSaleDTO dto)
     {
-        var sale = _saleRepository.CreateSale(dto);
-        return Ok(sale);
+        try
+        {
+            var sale = _saleService.CreateSale(dto);
+            return Ok(sale);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
     }
 }

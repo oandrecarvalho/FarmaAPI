@@ -13,9 +13,32 @@ public class ProductService : IProductService
         _productRepository = productRepository;
     }
 
-    public Product CreateProduct(CreateProductDTO dto)
+    public Product CreateProduct(CreateProductDTO productDTO)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (productDTO is null)
+            {
+                throw new Exception("Invalid product data");
+            }
+
+            var newProduct = new Product
+            {
+                Name = productDTO.Name,
+                Description = productDTO.Description,
+                Price = productDTO.Price,
+                Stock = productDTO.Stock,
+
+            };
+            
+            _productRepository.CreateProduct(newProduct);
+
+            return newProduct;
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 
     public List<Product> GetProducts()

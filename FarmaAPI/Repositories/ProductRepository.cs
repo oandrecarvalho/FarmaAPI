@@ -6,21 +6,38 @@ namespace FarmaAPI.Repositories;
 
 public class ProductRepository : IProductRepository
 {
-    private readonly IProductRepository _productRepository;
+    private readonly FarmaDbContext _context;
 
-    public ProductRepository(IProductRepository productRepository)
+    public ProductRepository(FarmaDbContext context)
     {
-        _productRepository = productRepository;
+        _context = context;
     }
 
-    public Product CreateProduct(CreateProductDTO dto)
+    public void CreateProduct(Product product)
     {
-        throw new NotImplementedException();
+        _context.Add(product);
+        _context.SaveChanges();
     }
 
     public List<Product> GetProducts()
     {
-        List<Product> products = _productRepository.GetProducts();
-        return products;
+        return _context.Products
+            .Select(p => p)
+            .ToList();
+    }
+
+    public Product FindById(Guid id)
+    {
+        return _context.Products
+            .Select(p => p)
+            .Where(p => p.Id.Equals(id))
+            .First();
+    }
+
+    public Product Update(Product product)
+    {
+        _context.Update(product);
+        _context.SaveChanges();
+        return product;
     }
 }

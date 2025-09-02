@@ -6,5 +6,5 @@ namespace FarmaAPI.Interfaces;
 public interface IClientService
 {
     public List<Client> GetClients();
-    public Client CreateClient(CreateClientDTO dto);
+    public Client CreateClient(CreateClientDTO clientDTO);
 }

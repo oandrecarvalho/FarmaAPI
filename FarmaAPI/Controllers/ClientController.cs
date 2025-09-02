@@ -24,7 +24,7 @@ public class ClientController: ControllerBase
     }
 
     [HttpPost(Name = "CreateClient")]
-    public IActionResult CreateClient(CreateClientDTO dto)
+    public IActionResult CreateClient([FromBody] CreateClientDTO dto)
     {
         var client = _clientService.CreateClient(dto);
         return Ok(client);

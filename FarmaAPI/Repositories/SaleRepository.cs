@@ -1,22 +1,24 @@
 using FarmaAPI.DTO;
 using FarmaAPI.Interfaces;
 using FarmaAPI.Models;
+using FarmaAPI.Services;
 
 namespace FarmaAPI.Repositories;
 
 public class SaleRepository : ISaleRepository
 {
-    private readonly ISaleRepository _saleRepository;
+    private readonly FarmaDbContext _context;
 
-    public SaleRepository(ISaleRepository saleRepository)
+    public SaleRepository(FarmaDbContext context)
     {
-        _saleRepository = saleRepository;
+        _context = context;
     }
 
-    public Sale CreateSale(CreateSaleDTO dto)
+    public void CreateSale(Sale sale)
     {
-        throw new NotImplementedException();
-    }
+        _context.Add(sale);
+        _context.SaveChanges();
+    }   
     public List<Sale> GetSales()
     {
         List<Sale> sales = new List<Sale>();

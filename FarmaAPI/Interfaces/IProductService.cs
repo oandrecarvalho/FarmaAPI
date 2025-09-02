@@ -6,5 +6,5 @@ namespace FarmaAPI.Interfaces;
 public interface IProductService
 {
     public List<Product> GetProducts();
-    public Product CreateProduct(CreateProductDTO dto);
+    public Product CreateProduct(CreateProductDTO productDTO);
 }
